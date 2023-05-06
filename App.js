@@ -1,20 +1,99 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
+import { createStackNavigator } from '@react-navigation/stack';
+import { AuthSignup } from './components/auth/signup';
+import AuthLogin from './components/auth/login';
+import Homepage from './src/homepage';
+import Snackers from './src/snacker';
+import FoodPage from './src/foodpage';
+import Yadav from './src/yadav';
+import CampusCafe from './src/campuscafe';
+import NightCanteen from './src/canteen';
+import Review from './src/review';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function HomeScreen({ route, navigation }) {
+  return <>
+    <Homepage navigation={navigation} />
+  </>
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+function SnackersScreen({ route, navigation }) {
+  return <>
+    <Snackers navigation={navigation} />
+  </>
+}
+function NightCanteenScreen({ route, navigation }) {
+  return <>
+    <NightCanteen navigation={navigation} />
+  </>
+}
+function YadavScreen({ route, navigation }) {
+  return <>
+    <Yadav navigation={navigation} />
+
+  </>
+}
+function CampusCafeScreen({ route, navigation }) {
+  return <>
+    <CampusCafe navigation={navigation} />
+  </>
+}
+function FoodScreen({ route, navigation }) {
+  return <>
+    <FoodPage route={route} navigation={navigation} />
+  </>
+}
+
+function ReviewScreen({ route, navigation }) {
+  return <>
+    <Review route={route} navigation={navigation} />
+  </>
+}
+function Signup({ route, navigation }) {
+  return <>
+    <AuthSignup navigation={navigation} />
+  </>
+}
+function Login({ route, navigation }) {
+  return <AuthLogin navigation={navigation} />
+}
+
+export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = React.useState(true);
+
+  if (isLoggedIn) {
+    return (
+      <>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Snacker" component={SnackersScreen} />
+            <Stack.Screen name="Campus Cafe" component={CampusCafeScreen} />
+            <Stack.Screen name="Night Canteen" component={NightCanteenScreen} />
+            <Stack.Screen name="Yadav" component={YadavScreen} />
+            <Stack.Screen name="Food Page" component={FoodScreen} />
+            <Stack.Screen name="Review" component={ReviewScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </>
+    );
+  }
+  else {
+    return <>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Signup" component={Signup} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
+  }
+
+}
