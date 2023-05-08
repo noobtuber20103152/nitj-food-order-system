@@ -14,6 +14,7 @@ import CampusCafe from './src/campuscafe';
 import NightCanteen from './src/canteen';
 import Review from './src/review';
 import Profile from './src/profile';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Stack = createStackNavigator();
@@ -65,14 +66,26 @@ function Signup({ route, navigation }) {
 
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(true);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  React.useEffect(() => {
+    async function alreadyLogin() {
+      // await AsyncStorage.setItem('id', '123');
+      let data = await AsyncStorage.getItem('id');
+      // await AsyncStorage.removeItem('id');
+      console.log(data);
+      if (data) {
+        setIsLoggedIn(true);
+      }
+    }
+    alreadyLogin();
+  }, [])
   function Login({ route, navigation }) {
     return <AuthLogin setIsLoggedIn={setIsLoggedIn} navigation={navigation} />
   }
   function ProfileScreen() {
     return <>
       {/* <Text>Profile</Text> */}
-      <Profile/>
+      <Profile setIsLoggedIn={setIsLoggedIn} />
     </>
   }
   if (isLoggedIn) {

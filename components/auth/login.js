@@ -1,19 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { Alert, TouchableHighlight } from 'react-native';
-import { Image, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { isEmail } from '../../utils';
 import { collection, getDoc, getDocs } from 'firebase/firestore';
 import db from '../../firebase/config';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 function AuthLogin({ navigation, setIsLoggedIn }) {
     const goToSignUpPage = () => {
-        // console.log("Go to sign up page...")
         navigation.navigate("Signup")
     }
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
-
+    const [loading, setLoading] = useState(false);
     const login = () => {
         if (!email || !password || !isEmail(email)) {
             Alert.alert('Error...', 'please enter a valid email', [
@@ -29,18 +28,21 @@ function AuthLogin({ navigation, setIsLoggedIn }) {
             password: password
         }
         console.log(userInfo);
-        getDocs(collection(db, 'users')).then((res) => {
+        setLoading(true);
+        getDocs(collection(db, 'users')).then(async (res) => {
             let isAuth = false;
+            let id;
             res.forEach((doc) => {
-                // console.log(doc.data().email, doc.data().password);
                 console.log(doc.data().email === email && doc.data().password === password);
                 if (doc.data().email === email && doc.data().password === password) {
                     isAuth = true;
-                    // return;
+                    id = doc.id;
                 }
             })
             if (isAuth) {
-
+                setLoading(false);
+                console.log(id);
+                await AsyncStorage.setItem('id', id);
                 Alert.alert('Sucesss', 'auth successfull, explore items', [
                     {
                         text: 'Ok',
@@ -49,6 +51,7 @@ function AuthLogin({ navigation, setIsLoggedIn }) {
                 ])
             }
             else {
+                setLoading(false);
                 Alert.alert('Error...', 'Email or password wrong, please try again', [
                     {
                         text: 'Ok'
@@ -56,6 +59,7 @@ function AuthLogin({ navigation, setIsLoggedIn }) {
                 ])
             }
         }).catch((err) => {
+            setLoading(false);
             Alert.alert('Error...', 'some error occured, pleae try again', [
                 {
                     text: 'Ok',
@@ -86,7 +90,7 @@ function AuthLogin({ navigation, setIsLoggedIn }) {
                         <TouchableHighlight underlayColor="transparent" onPress={login} >
                             <View className="py-2 my-2 rounded-lg bg-red-400">
                                 <Text className="text-center text-xl font-bold text-white">
-                                    Log In
+                                    {loading ? 'Loading...' : 'Log In'}
                                 </Text>
                             </View>
                         </TouchableHighlight>

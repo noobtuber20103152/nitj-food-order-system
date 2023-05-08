@@ -65,7 +65,7 @@ function Modal(props) {
 
     }
     return <>
-        <View className="absolute w-full  z-20 h-full  top-0  items-center bg-gray-100/80 justify-center">
+        <View className="absolute w-full  z-20 h-full  top-0  items-center bg-black/70 justify-center">
             <View className="w-11/12 mx-auto my-auto py-4 px-4 bg-white  rounded-lg">
                 <View className="justify-end items-end">
                     <TouchableHighlight underlayColor="transparent" onPress={props.closeModal}>
@@ -109,7 +109,7 @@ const FoodPage = ({ route, navigation }) => {
     }
 
     const goToReviewScreen = () => {
-        navigation.navigate('Review', {reviewData, data});
+        navigation.navigate('Review', { reviewData, data });
     }
     const [ratingStar, setRatingStar] = useState(0);
     const [totalReviews, setTotalReviews] = useState(0);
@@ -135,7 +135,7 @@ const FoodPage = ({ route, navigation }) => {
                     let one = 0;
                     let arr = [];
                     result.forEach((doc) => {
-                        arr.push({id:doc.id, ...doc.data()});
+                        arr.push({ id: doc.id, ...doc.data() });
                         console.log(doc.data().rating);
                         sum += doc.data().rating;
                         if (doc.data().rating == 5) {
