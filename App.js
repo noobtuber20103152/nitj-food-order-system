@@ -13,6 +13,7 @@ import Yadav from './src/yadav';
 import CampusCafe from './src/campuscafe';
 import NightCanteen from './src/canteen';
 import Review from './src/review';
+import Profile from './src/profile';
 
 
 const Stack = createStackNavigator();
@@ -61,13 +62,19 @@ function Signup({ route, navigation }) {
     <AuthSignup navigation={navigation} />
   </>
 }
-function Login({ route, navigation }) {
-  return <AuthLogin navigation={navigation} />
-}
+
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(true);
-
+  function Login({ route, navigation }) {
+    return <AuthLogin setIsLoggedIn={setIsLoggedIn} navigation={navigation} />
+  }
+  function ProfileScreen() {
+    return <>
+      {/* <Text>Profile</Text> */}
+      <Profile/>
+    </>
+  }
   if (isLoggedIn) {
     return (
       <>
@@ -80,6 +87,7 @@ export default function App() {
             <Stack.Screen name="Yadav" component={YadavScreen} />
             <Stack.Screen name="Food Page" component={FoodScreen} />
             <Stack.Screen name="Review" component={ReviewScreen} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </>

@@ -12,6 +12,8 @@ export const AuthSignup = ({ navigation }) => {
         navigation.navigate("Login")
     }
     const signUp = async () => {
+        console.log({ email: email, password: password, confrimPassword: confrimPassword });
+        // return ;
         if (!email || !password || !confrimPassword || password != confrimPassword || !isEmail(email)) {
             Alert.alert('User info !', 'Please user info correctly...', [
                 {
@@ -21,56 +23,60 @@ export const AuthSignup = ({ navigation }) => {
             ]);
             return;
         }
-        // const q = collection(db, "users");
-        // let userData = await getDocs(q);
-        // console.log(userData);
-        // let filterData = (await getDocs(q))?.filter((doc) => {
-        //     if (doc.data().email === email) return doc;
-        // })
-        // if (filterData.length > 0) {
-        //     Alert.alert('Email already exists', 'Please try again with new email id...', [
-        //         {
-        //             text: 'ok',
-        //             onPress: () => navigation.navigate("Login"),
-        //         }
-        //     ]);
-        //     return;
-        // }
-        // return;
-        const userInfo = {
-            username: getUserNameFromEmail(email),
-            email: email,
-            password: email,
-            address: ""
-        }
-        console.log(userInfo);
-        const collectionName = collection(db, "users");
-        addDoc(collectionName, userInfo).then((result) => {
-            // console.log(result);
-            if (result) {
-                console.log(result);
-                Alert.alert('Account created successfully', 'Now you can login to your account', [
+
+        getDocs(collection(db, "users")).then((res) => {
+            let isEmailPresent = false;
+            res.forEach((doc) => {
+                if (doc.data().email === email) isEmailPresent = true;
+            })
+            if (isEmailPresent) {
+                Alert.alert('Please try again...', 'Email already exists, please try another email', [
                     {
-                        text: 'Login',
-                        onPress: () => navigation.navigate("Login"),
+                        text: 'Ok',
+                        onPress: () => console.log('Email already exists')
                     }
-                ]);
+                ])
+            }
+            else {
+                const userInfo = {
+                    username: getUserNameFromEmail(email),
+                    email: email,
+                    password: password,
+                    address: ""
+                }
+                console.log(userInfo);
+                const collectionName = collection(db, "users");
+                addDoc(collectionName, userInfo).then((result) => {
+                    if (result) {
+                        console.log(result);
+                        Alert.alert('Account created successfully', 'Now you can login to your account', [
+                            {
+                                text: 'Login',
+                                onPress: () => navigation.navigate("Login"),
+                            }
+                        ]);
+                    }
+                })
+                    .catch((err) => {
+                        console.log(err);
+                        Alert.alert('Please try again', 'Some error occured during signup', [
+                            {
+                                text: 'Login',
+                                onPress: () => console.log('Ask me later pressed'),
+                            }
+                        ]);
+                    })
             }
         })
             .catch((err) => {
-                console.log(err);
-                Alert.alert('Please try again', 'Some error occured during signup', [
+                Alert.alert('Error...', 'some error occured, please try again...', [
                     {
-                        text: 'Login',
-                        onPress: () => console.log('Ask me later pressed'),
+                        text: 'OK',
+                        onPress: console.log("Error occured")
                     }
-                ]);
+                ])
             })
-        // db
-
-
-
-
+        return;
 
     }
     const changeEmail = (e) => {
@@ -86,22 +92,19 @@ export const AuthSignup = ({ navigation }) => {
         <>
             <ScrollView>
                 <View>
-                    <Image className="h-[40vh]"
-                        source={{ uri: "https://images.news18.com/ibnlive/uploads/2022/01/shutterstock_649541308-1.jpg" }}
+                    <Image className="h-[40vh]" source={{ uri: "https://images.news18.com/ibnlive/uploads/2022/01/shutterstock_649541308-1.jpg" }}
                     />
                 </View>
                 <View className="mt-6">
                     <Text className="text-center text-2xl font-bold ">NITJ Online Food System</Text>
                 </View>
-
                 <View className="px-6">
                     <Text className="text-center  my-4">Sign up your account </Text>
                     <SafeAreaView>
-
                         <View>
-                            <TextInput autoComplete='off' defaultValue={email} onChangeText={changeEmail} className="px-2 my-2 py-2 border rounded-lg border-gray-300" placeholder='Enter Your Email' />
-                            <TextInput autoComplete='off' defaultValue={password} onChangeText={changePassword} className="px-2 my-2 py-2 border rounded-lg border-gray-300" placeholder='Enter Your Password' />
-                            <TextInput autoComplete='off' defaultValue={confrimPassword} onChangeText={changeConfirmPassword} className="px-2 my-2 py-2 border rounded-lg border-gray-300" placeholder='Confirm Your Password' />
+                            <TextInput defaultValue={email} onChangeText={(e) => setEmail(e)} className="px-2 my-2 py-2 border rounded-lg border-gray-300" placeholder='Enter Your Email' />
+                            <TextInput defaultValue={password} onChangeText={(e) => setPassword(e)} className="px-2 my-2 py-2 border rounded-lg border-gray-300" placeholder='Enter Your Password' />
+                            <TextInput defaultValue={confrimPassword} onChangeText={(e) => setConfirmPassword(e)} className="px-2 my-2 py-2 border rounded-lg border-gray-300" placeholder='Confirm Your Password' />
                             <Text className="my-2 text-sm text-blue-800">Already have an account ? <Text onPress={goToLoginPage} className="text-black">Click Here</Text> </Text>
                             <TouchableHighlight underlayColor="transparent" onPress={signUp} >
                                 <View className="py-2 my-2 rounded-lg bg-red-400">
@@ -113,7 +116,6 @@ export const AuthSignup = ({ navigation }) => {
                         </View>
                     </SafeAreaView>
                 </View>
-
             </ScrollView>
         </>
     )

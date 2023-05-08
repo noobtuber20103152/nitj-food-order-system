@@ -1,14 +1,14 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
 import React from 'react'
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, EvilIcons } from '@expo/vector-icons';
 import Item from '../components/item';
 import ServiceCard from '../components/servicecard';
 const Homepage = ({ navigation }) => {
     return (
         <>
             <ScrollView className="bg-white">
-                <View className="flex-row w-11/12 mt-6 mx-auto">
+                {/* <View className="flex-row w-11/12 mt-6 mx-auto">
                     <View className="w-10/12 ">
                         <TextInput className="w-full rounded-lg py-2 px-2 border border-gray-300" />
                     </View>
@@ -27,11 +27,20 @@ const Homepage = ({ navigation }) => {
                             </>
                         })}
                     </ScrollView>
-                </View>
-                <View className="flex-row justify-center items-center w-11/12 mt-10 mb-5 mx-auto">
+                </View> */}
+                {/* <View className="flex-row justify-center items-center w-11/12 mt-10 mb-5 mx-auto">
                     <Text className="text-sm tracking-widest text-center uppercase">What's service we are providing ?</Text>
+                </View> */}
+                <View className="px-4">
+                    <View className=" flex-row items-center justify-end">
+                        <Text className="text-lg font-bold mr-2">Profile</Text>
+                        <TouchableHighlight onPress={() => navigation.navigate('Profile')} underlayColor="transparent">
+                            <View className="h-12 w-12 rounded-full bg-gray-200  items-center justify-center ">
+                                <EvilIcons name="user" color="blue" size={48} />
+                            </View>
+                        </TouchableHighlight>
+                    </View>
                 </View>
-
                 <ServiceCard img="https://img.restaurantguru.com/w550/h367/r242-The-Snackers-burger.jpg" title="The Snackers" route="Snacker" navigation={navigation} />
                 <ServiceCard img="https://b.zmtcdn.com/data/reviews_photos/8cb/beb7b5528b9dbbc0b1fa7d0f107848cb_1601017365.jpg" title="The Yadav Canteen" route="Yadav" navigation={navigation} />
                 <ServiceCard img="https://10619-2.s.cdn12.com/rests/original/103_506046238.jpg" title="The Night Canteen" route="Night Canteen" navigation={navigation} />

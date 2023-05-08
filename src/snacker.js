@@ -4,8 +4,8 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { collection, getDoc, getDocs } from "firebase/firestore"
 import db from '../firebase/config'
 import { TouchableHighlight } from 'react-native'
+import Preload from '../components/preload'
 function ItemCard(props) {
-    // console.log(props.data);
     const goToFoodPage = () => {
         props.navigation.navigate("Food Page", { ...props.data, service: 'snackerItems' })
     }
@@ -19,7 +19,6 @@ function ItemCard(props) {
                             {props?.desc?.slice(0, 100)}...
                         </Text>
                         <Text className="text-sm font-bold text-gray-600">₹{props.price}</Text>
-                        {/* <Text className="text-sm font-bold text-blue-600">20% off</Text> */}
                     </View>
                     <View className="w-4/12">
                         <Image className="h-[13vh] rounded-lg" source={{ uri: props.img }} />
@@ -32,24 +31,20 @@ function ItemCard(props) {
 
 const Snackers = ({ navigation }) => {
     let [items, setItems] = useState([]);
-
+    let [loading, setLoading] = useState(false);
     useEffect(() => {
         async function getData() {
+            setLoading(true);
             let querySnapshot = await getDocs(collection(db, "snackerItems"));
             let arr = []
             querySnapshot.forEach((doc) => {
-                // console.log(doc.id);
-                // console.log(doc.data());
                 arr.push({ id: doc.id, ...doc.data() });
-                // setItems([...items, {id:doc.id, ...doc.data()}])
-                // setItems([...items, ])
             })
-            // console.log(arr.length);
             setItems(arr);
+            setLoading(false);
         }
         getData();
     }, [])
-    // console.log(items);
 
     return (
         <>
@@ -72,8 +67,12 @@ const Snackers = ({ navigation }) => {
                     </View>
                 </View>
                 <View className="mt-6">
+                    {loading && [1, 2, 3, 4, 5, 6, 7, 8].map((e) => {
+                        return <>
+                            <Preload />
+                        </>
+                    })}
                     {items?.map((e) => {
-                        // console.log(e.data().img)
                         console.log(e.id);
                         return <>
                             <ItemCard navigation={navigation} key={e.id} data={e} name={e.name} desc={e.desc} price={e.price} img={e.img} />

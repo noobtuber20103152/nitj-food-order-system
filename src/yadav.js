@@ -4,6 +4,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { collection, getDoc, getDocs } from "firebase/firestore"
 import db from '../firebase/config'
 import { TouchableHighlight } from 'react-native'
+import Preload from '../components/preload'
 function ItemCard(props) {
   // console.log(props.data);
   const goToFoodPage = () => {
@@ -32,9 +33,10 @@ function ItemCard(props) {
 
 const Yadav = ({ navigation }) => {
   let [items, setItems] = useState([]);
-
+  let [loading, setLoading] = useState(false);
   useEffect(() => {
     async function getData() {
+      setLoading(true);
       let querySnapshot = await getDocs(collection(db, "yadavItems"));
       let arr = []
       querySnapshot.forEach((doc) => {
@@ -46,6 +48,7 @@ const Yadav = ({ navigation }) => {
       })
       // console.log(arr.length);
       setItems(arr);
+      setLoading(false)
     }
     getData();
   }, [])
@@ -72,6 +75,11 @@ const Yadav = ({ navigation }) => {
           </View>
         </View>
         <View className="mt-6">
+          {loading && [1, 2, 3, 4, 5, 6, 7, 8].map((e) => {
+            return <>
+              <Preload />
+            </>
+          })}
           {items?.map((e) => {
             // console.log(e.data().img)
             console.log(e.id);
